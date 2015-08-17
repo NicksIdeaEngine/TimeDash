@@ -921,7 +921,7 @@ function RunTimeDistribution()
         end
     end
     
-    max = math.max(rows[1], rows[2], rows[3], rows[4], rows[5])
+    max = rows[1]+rows[2]+rows[3]+rows[4]+rows[5]
     
     -- If I name these measures differently, this can be a loop
     SKIN:Bang('!SetOption', 'Measure2', 'Formula', rows[1]/max)
@@ -968,4 +968,14 @@ function RunTotalTime(style)
     end
     
     SKIN:Bang('!SetOption', 'Time2', 'Text', MStoTimeStr(sum, style))
+end
+
+function RunPulseTime(style)
+    RescueTimeJSON = JSON:decode(SKIN:GetMeasure('GetJSONPulse'):GetStringValue())
+    local color = string.upper(string.sub(RescueTimeJSON['color'], 2))
+   
+    print(color)
+    
+    SKIN:Bang('!SetOption', 'ProductivityPulse', 'Formula', RescueTimeJSON['pulse'])
+    SKIN:Bang('!SetVariable', 'ColorPulse', color )
 end
