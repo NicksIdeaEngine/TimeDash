@@ -1,10 +1,10 @@
-RainTime
+TimeDash
 ========
 
-Move the RescueTime.inc.new to RescueTime.inc, Add your API key to `@Resources\RescueTime.inc` and enjoy!
+Change RescueTime.inc.new to RescueTime.inc and WakaTime.inc.new to WakaTime.inc
 
-![](https://pbs.twimg.com/media/CMnIi7jWgAE-B2c.png)
+Add your API key to `@Resources\RescueTime.inc` and `@Resources\WakaTime.inc`
 
 Uses [JSON.lua](http://regex.info/blog/lua/json) by Jeffrey Friedl.
 
-Released as [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/deed.en_US), original project made by [Georges Hahn](https://github.com/GeorgeHahn/) !
+Released as [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/deed.en_US).  Original project made by [Georges Hahn](https://github.com/GeorgeHahn/) and Pulse functionality added by [Elektro Korobase](https://github.com/Elektro121)!
