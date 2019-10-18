@@ -899,8 +899,6 @@ end
 function RunTimeDistribution()
     RescueTimeJSON = JSON:decode(SKIN:GetMeasure('GetJSON'):GetStringValue())
     
-    --print(SKIN:GetMeasure('GetJSON'):GetStringValue())
-    
     rows = {0, 0, 0, 0, 0}
     
     for n = 1, #RescueTimeJSON['rows'] do
@@ -961,7 +959,6 @@ function RunTotalTime(style)
     sum = 0
     
     for n = 1, #RescueTimeJSON['rows'] do
-        dex = RescueTimeJSON['rows'][n][3] -- Index 3 is the productivity level
         val = RescueTimeJSON['rows'][n][2]; -- Index 2 is the time at above level
         
         sum = sum + val
@@ -970,12 +967,60 @@ function RunTotalTime(style)
     SKIN:Bang('!SetOption', 'Time2', 'Text', MStoTimeStr(sum, style))
 end
 
-function RunPulseTime(style)
+function RunPulseTime()
     RescueTimeJSON = JSON:decode(SKIN:GetMeasure('GetJSONPulse'):GetStringValue())
     local color = string.upper(string.sub(RescueTimeJSON['color'], 2))
-   
-    print(color)
+    local pulse = RescueTimeJSON['pulse']
+
+    if pulse == 100 then
+       SKIN:Bang('!SetOption', 'Number', 'FontSize', 26)
+    else
+       SKIN:Bang('!SetOption', 'Number', 'FontSize', 36)
+    end
     
-    SKIN:Bang('!SetOption', 'ProductivityPulse', 'Formula', RescueTimeJSON['pulse'])
+    SKIN:Bang('!SetOption', 'ProductivityPulse', 'Formula', pulse)
     SKIN:Bang('!SetVariable', 'ColorPulse', color )
+end
+
+function RunTimeDash(style)
+   RescueTimeJSON = JSON:decode(SKIN:GetMeasure('GetRescueTimeData'):GetStringValue())
+
+   totalTime = 0
+   softDevTime = 0
+
+   for n = 1, #RescueTimeJSON['rows'] do
+      val = RescueTimeJSON['rows'][n][2];
+
+      totalTime = totalTime + val
+   end
+
+   for n = 1, #RescueTimeJSON['rows'] do
+      if CheckSoftDev(RescueTimeJSON['rows'][n][5]) then
+         softDevTime = softDevTime + RescueTimeJSON['rows'][n][2]
+      end
+   end
+
+   SKIN:Bang('!SetOption', 'TotalTime', 'Text', MStoTimeStr(totalTime, style))
+   SKIN:Bang('!SetOption', 'DevTime', 'Text', MStoTimeStr(softDevTime, style))
+end
+
+function RunWakaData()
+   WakaTimeJSON = 0
+
+   SKIN:Bang('!SetOption', 'TestText', 'Text', WakaTimeJSON)
+end
+
+function CheckSoftDev(category)
+   result = false
+   if category == 'Data Modeling & Analysis'
+   or category == 'General Software Development'
+   or category == 'Design & Planning'
+   or category == 'Quality Assurance'
+   or category == 'Systems Operations'
+   or category == 'Editing & IDEs'
+   then
+      result = true
+   end
+
+   return result
 end

@@ -1,0 +1,5 @@
+[Variables]
+
+; Your WakaTime API key
+; Retrieve from https://wakatime.com/settings/api-key
+key = 
