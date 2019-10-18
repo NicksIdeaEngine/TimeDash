@@ -982,11 +982,12 @@ function RunPulseTime()
    SKIN:Bang('!SetVariable', 'ColorPulse', color )
 end
 
-function RunTimeDash(style)
+function RunDashboard(style)
    RescueTimeJSON = JSON:decode(SKIN:GetMeasure('GetRescueTimeData'):GetStringValue())
 
    totalTime = 0
    softDevTime = 0
+   goalTimeRemaining = 6 * 60 * 60
 
    for n = 1, #RescueTimeJSON['rows'] do
       val = RescueTimeJSON['rows'][n][2];
@@ -997,9 +998,11 @@ function RunTimeDash(style)
    for n = 1, #RescueTimeJSON['rows'] do
       if CheckSoftDev(RescueTimeJSON['rows'][n][5]) then
          softDevTime = softDevTime + RescueTimeJSON['rows'][n][2]
+         goalTimeRemaining = goalTimeRemaining - RescueTimeJSON['rows'][n][2]
       end
    end
 
+   SKIN:Bang('!SetOption', 'GoalTime', 'Text', MStoTimeStr(goalTimeRemaining, style))
    SKIN:Bang('!SetOption', 'TotalTime', 'Text', MStoTimeStr(totalTime, style))
    SKIN:Bang('!SetOption', 'DevTime', 'Text', MStoTimeStr(softDevTime, style))
 end
