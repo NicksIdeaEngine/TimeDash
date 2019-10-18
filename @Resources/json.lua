@@ -1007,10 +1007,12 @@ function RunDashboard(style)
    SKIN:Bang('!SetOption', 'DevTime', 'Text', MStoTimeStr(softDevTime, style))
 end
 
-function RunWakaData()
-   WakaTimeJSON = 0
-
-   SKIN:Bang('!SetOption', 'TestText', 'Text', WakaTimeJSON)
+function RunWakaTime(style)
+   WakaTimeJSON = JSON:decode(SKIN:GetMeasure('GetWakaTimeData'):GetStringValue())
+   
+   data = WakaTimeJSON['data']
+   
+   SKIN:Bang('!SetOption', 'WakaTime', 'Text', data)
 end
 
 function CheckSoftDev(category)
