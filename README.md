@@ -5,7 +5,7 @@ Change RescueTime.inc.new to RescueTime.inc and WakaTime.inc.new to WakaTime.inc
 
 Add your API key to `@Resources\RescueTime.inc` and `@Resources\WakaTime.inc`
 
-![Screenshot of TimeDash](../screenshot.png)
+![Screenshot of TimeDash](screenshot.png)
 
 Uses [JSON.lua](http://regex.info/blog/lua/json) by Jeffrey Friedl.
 
