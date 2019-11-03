@@ -893,139 +893,150 @@ end
 
 
 function Initialize()
-   JSON = OBJDEF:new()
+  JSON = OBJDEF:new()
 end
 
 function RunTimeDistribution()
-   RescueTimeJSON = JSON:decode(SKIN:GetMeasure('GetJSON'):GetStringValue())
-   
-   rows = {0, 0, 0, 0, 0}
-   
-   for n = 1, #RescueTimeJSON['rows'] do
-      dex = RescueTimeJSON['rows'][n][3] -- Index 3 is the productivity level
-      val = RescueTimeJSON['rows'][n][2]; -- Index 2 is the time at above level
-      
-      -- If I index this the other direction, it'll be a direct mapping
-      if dex == 2
-         then rows[1] = val
-      elseif dex == 1
-         then rows[2] = val
-      elseif dex == 0
-         then rows[3] = val
-      elseif dex == -1
-         then rows[4] = val
-      elseif dex == -2
-         then rows[5] = val
-      end
-   end
-   
-   max = rows[1]+rows[2]+rows[3]+rows[4]+rows[5]
-   
-   -- If I name these measures differently, this can be a loop
-   SKIN:Bang('!SetOption', 'Measure2', 'Formula', rows[1]/max)
-   SKIN:Bang('!SetOption', 'Measure1', 'Formula', rows[2]/max)
-   SKIN:Bang('!SetOption', 'Measure0', 'Formula', rows[3]/max)
-   SKIN:Bang('!SetOption', 'MeasureN1', 'Formula', rows[4]/max)
-   SKIN:Bang('!SetOption', 'MeasureN2', 'Formula', rows[5]/max)
+  RescueTimeJSON = JSON:decode(SKIN:GetMeasure('GetJSON'):GetStringValue())
+  
+  rows = {0, 0, 0, 0, 0}
+  
+  for n = 1, #RescueTimeJSON['rows'] do
+    dex = RescueTimeJSON['rows'][n][3] -- Index 3 is the productivity level
+    val = RescueTimeJSON['rows'][n][2]; -- Index 2 is the time at above level
+    
+    -- If I index this the other direction, it'll be a direct mapping
+    if dex == 2
+        then rows[1] = val
+    elseif dex == 1
+        then rows[2] = val
+    elseif dex == 0
+        then rows[3] = val
+    elseif dex == -1
+        then rows[4] = val
+    elseif dex == -2
+        then rows[5] = val
+    end
+  end
+  
+  max = rows[1]+rows[2]+rows[3]+rows[4]+rows[5]
+  
+  -- If I name these measures differently, this can be a loop
+  SKIN:Bang('!SetOption', 'Measure2', 'Formula', rows[1]/max)
+  SKIN:Bang('!SetOption', 'Measure1', 'Formula', rows[2]/max)
+  SKIN:Bang('!SetOption', 'Measure0', 'Formula', rows[3]/max)
+  SKIN:Bang('!SetOption', 'MeasureN1', 'Formula', rows[4]/max)
+  SKIN:Bang('!SetOption', 'MeasureN2', 'Formula', rows[5]/max)
 end
 
 function MStoTimeStr(ms, style)
-   hours = math.floor(ms / 60 / 60)
-   minutes = math.floor((ms / 60) - (hours * 60))
-   
-   if style == Nil or style == 1 then
-      ht = 'hour'
-      mt = 'minute'
-      ct = ', '
-      
-      if hours > 1 then
-         ht = ht .. 's'
-      end
-      if minutes > 1 then
-         mt = mt .. 's'
-      end
-   elseif style == 2 then
-      ht = 'h'
-      mt = 'm'
-      ct = ' '
-   end
-   
-   return hours .. ht .. ct .. minutes .. mt
+  hours = math.floor(ms / 60 / 60)
+  minutes = math.floor((ms / 60) - (hours * 60))
+  
+  if style == Nil or style == 1 then
+    ht = 'hour'
+    mt = 'minute'
+    ct = ', '
+    
+    if hours > 1 then
+        ht = ht .. 's'
+    end
+    if minutes > 1 then
+        mt = mt .. 's'
+    end
+  elseif style == 2 then
+    ht = 'h'
+    mt = 'm'
+    ct = ' '
+  end
+  
+  return hours .. ht .. ct .. minutes .. mt
 end
 
 function RunTotalTime(style)
-   RescueTimeJSON = JSON:decode(SKIN:GetMeasure('GetJSON'):GetStringValue())
-   
-   sum = 0
-   
-   for n = 1, #RescueTimeJSON['rows'] do
-      val = RescueTimeJSON['rows'][n][2]; -- Index 2 is the time at above level
-      
-      sum = sum + val
-   end
-   
-   SKIN:Bang('!SetOption', 'Time2', 'Text', MStoTimeStr(sum, style))
+  RescueTimeJSON = JSON:decode(SKIN:GetMeasure('GetJSON'):GetStringValue())
+  
+  sum = 0
+  
+  for n = 1, #RescueTimeJSON['rows'] do
+    val = RescueTimeJSON['rows'][n][2]; -- Index 2 is the time at above level
+    
+    sum = sum + val
+  end
+  
+  SKIN:Bang('!SetOption', 'Time2', 'Text', MStoTimeStr(sum, style))
 end
 
 function RunPulseTime()
-   RescueTimeJSON = JSON:decode(SKIN:GetMeasure('GetJSONPulse'):GetStringValue())
-   local color = string.upper(string.sub(RescueTimeJSON['color'], 2))
-   local pulse = RescueTimeJSON['pulse']
+  RescueTimeJSON = JSON:decode(SKIN:GetMeasure('GetJSONPulse'):GetStringValue())
+  local pulse = RescueTimeJSON['pulse']
 
-   if pulse == 100 then
-      SKIN:Bang('!SetOption', 'Number', 'FontSize', 26)
-   else
-      SKIN:Bang('!SetOption', 'Number', 'FontSize', 36)
-   end
-   
-   SKIN:Bang('!SetOption', 'ProductivityPulse', 'Formula', pulse)
-   SKIN:Bang('!SetVariable', 'ColorPulse', color )
+  if pulse == 100 then
+    SKIN:Bang('!SetOption', 'Number', 'FontSize', 26)
+  else
+    SKIN:Bang('!SetOption', 'Number', 'FontSize', 36)
+  end
+
+  if RescueTimeJSON['color'] ~= nil then
+    local color = string.upper(string.sub(RescueTimeJSON['color'], 2))
+    SKIN:Bang('!SetVariable', 'ColorPulse', color )
+  end
+  
+  SKIN:Bang('!SetOption', 'ProductivityPulse', 'Formula', pulse)
 end
 
 function RunDashboard(style)
-   RescueTimeJSON = JSON:decode(SKIN:GetMeasure('GetRescueTimeData'):GetStringValue())
+  RescueTimeJSON = JSON:decode(SKIN:GetMeasure('GetRescueTimeData'):GetStringValue())
 
-   totalTime = 0
-   softDevTime = 0
-   goalTimeRemaining = 6 * 60 * 60
+  totalTime = 0
+  softDevTime = 0
+  goalTimeRemaining = 6 * 60 * 60
 
-   for n = 1, #RescueTimeJSON['rows'] do
-      val = RescueTimeJSON['rows'][n][2];
+  for n = 1, #RescueTimeJSON['rows'] do
+    val = RescueTimeJSON['rows'][n][2];
 
-      totalTime = totalTime + val
-   end
+    totalTime = totalTime + val
+  end
 
-   for n = 1, #RescueTimeJSON['rows'] do
-      if CheckSoftDev(RescueTimeJSON['rows'][n][5]) then
-         softDevTime = softDevTime + RescueTimeJSON['rows'][n][2]
-         goalTimeRemaining = goalTimeRemaining - RescueTimeJSON['rows'][n][2]
-      end
-   end
+  for n = 1, #RescueTimeJSON['rows'] do
+    if CheckSoftDev(RescueTimeJSON['rows'][n][5]) then
+        softDevTime = softDevTime + RescueTimeJSON['rows'][n][2]
+        goalTimeRemaining = goalTimeRemaining - RescueTimeJSON['rows'][n][2]
+    end
+  end
 
-   SKIN:Bang('!SetOption', 'GoalTime', 'Text', MStoTimeStr(goalTimeRemaining, style))
-   SKIN:Bang('!SetOption', 'TotalTime', 'Text', MStoTimeStr(totalTime, style))
-   SKIN:Bang('!SetOption', 'DevTime', 'Text', MStoTimeStr(softDevTime, style))
+  SKIN:Bang('!SetOption', 'GoalTime', 'Text', MStoTimeStr(goalTimeRemaining, style))
+  SKIN:Bang('!SetOption', 'TotalTime', 'Text', MStoTimeStr(totalTime, style))
+  SKIN:Bang('!SetOption', 'DevTime', 'Text', MStoTimeStr(softDevTime, style))
 end
 
 function RunWakaTime(style)
-   WakaTimeJSON = JSON:decode(SKIN:GetMeasure('GetWakaTimeData'):GetStringValue())
-   
-   data = WakaTimeJSON['data']
-   
-   SKIN:Bang('!SetOption', 'WakaTime', 'Text', data)
+  WakaTimeJSON = JSON:decode(SKIN:GetMeasure('GetWakaTimeData'):GetStringValue())
+  
+  data = WakaTimeJSON['data']
+  
+  SKIN:Bang('!SetOption', 'WakaTime', 'Text', data)
+end
+
+function RunCodeWarsRank(style)
+  CodeWarsJSON = JSON:decode(SKIN:GetMeasure('GetCodeWarsRank'):GetStringValue())
+  
+  data = CodeWarsJSON['ranks']['overall']['name']
+  
+  SKIN:Bang('!SetOption', 'CodeWars', 'Text', data)
 end
 
 function CheckSoftDev(category)
-   result = false
-   if category == 'Data Modeling & Analysis'
-   or category == 'General Software Development'
-   or category == 'Design & Planning'
-   or category == 'Quality Assurance'
-   or category == 'Systems Operations'
-   or category == 'Editing & IDEs'
-   then
-      result = true
-   end
+  result = false
+  if category == 'Data Modeling & Analysis'
+  or category == 'General Software Development'
+  or category == 'Design & Planning'
+  or category == 'Quality Assurance'
+  or category == 'Systems Operations'
+  or category == 'Editing & IDEs'
+  then
+    result = true
+  end
 
-   return result
+  return result
 end
